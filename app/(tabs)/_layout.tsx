@@ -22,9 +22,12 @@ export default function TabLayout() {
   }, []);
 
   useEffect(() => {
-    if (readyToCheck && !user) {
-      router.replace("/(auth)/login");
-    }
+    const timeoutId = setTimeout(() => {
+      if (readyToCheck && !user) {
+        router.replace("/login");
+      }
+    }, 500);
+    return () => clearTimeout(timeoutId);
   }, [readyToCheck, user, router]);
 
   if (!readyToCheck) return null;
@@ -48,7 +51,7 @@ export default function TabLayout() {
         }}
       >
         <Drawer.Screen
-          name="employees"
+          name="index"
           options={{
             drawerLabel: "Empleados",
             headerTitle: "",

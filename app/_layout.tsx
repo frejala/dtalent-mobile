@@ -5,11 +5,12 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
-import { UserProvider } from "@/context/useUser";
+import { UserProvider, useUserContext } from "@/context/useUser";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { user } = useUserContext();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -26,7 +27,7 @@ export default function RootLayout() {
 
   return (
     <UserProvider>
-      <Stack>
+      <Stack initialRouteName={user ? "(tabs)" : "(auth)"}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       </Stack>
