@@ -1,45 +1,73 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useUserContext } from "@/context/useUser";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Drawer } from "expo-router/drawer";
+import CustomDrawerContent from "@/components/CustomDrawerContent";
+import { Ionicons } from "@expo/vector-icons";
+
+let rootLayoutMounted = false;
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const router = useRouter();
+  const { user } = useUserContext();
+  const [readyToCheck, setReadyToCheck] = useState(false);
+
+  useEffect(() => {
+    if (!rootLayoutMounted) {
+      rootLayoutMounted = true;
+    }
+    setReadyToCheck(true);
+  }, []);
+
+  useEffect(() => {
+    if (readyToCheck && !user) {
+      router.replace("/(auth)/login");
+    }
+  }, [readyToCheck, user, router]);
+
+  if (!readyToCheck) return null;
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    <GestureHandlerRootView
+      style={{
+        display: "flex",
+        flex: 1,
+        height: "100%",
+      }}
+    >
+      <Drawer
+        drawerContent={CustomDrawerContent}
+        screenOptions={{
+          drawerHideStatusBarOnOpen: true,
+          drawerActiveBackgroundColor: "#0087D1",
+          drawerActiveTintColor: "#fff",
+          drawerInactiveTintColor: "#fff",
+          drawerLabelStyle: { marginLeft: 10 },
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Drawer.Screen
+          name="employees"
+          options={{
+            drawerLabel: "Empleados",
+            headerTitle: "",
+            drawerIcon: ({ size, color }) => (
+              <Ionicons name="people-sharp" size={size} color={color} />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="receipts"
+          options={{
+            drawerLabel: "Recibos",
+            headerTitle: "",
+            drawerIcon: ({ size, color }) => (
+              <Ionicons name="receipt-sharp" size={size} color={color} />
+            ),
+          }}
+        />
+      </Drawer>
+    </GestureHandlerRootView>
   );
 }
