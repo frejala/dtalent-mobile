@@ -504,5 +504,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 16,
     backgroundColor: "#fff",
+    marginTop: -30,
   },
 });
