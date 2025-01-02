@@ -79,6 +79,7 @@ export default function Employees() {
     <SafeAreaView
       style={{
         flex: 1,
+        paddingTop: 0,
       }}
     >
       <Surface style={styles.surfaceCointainer} elevation={2}>
@@ -447,6 +448,7 @@ const styles = StyleSheet.create({
   surfaceCointainer: {
     display: "flex",
     flexDirection: "column",
+    marginTop: -30,
     marginBottom: 16,
     padding: 16,
     backgroundColor: "#fff",
